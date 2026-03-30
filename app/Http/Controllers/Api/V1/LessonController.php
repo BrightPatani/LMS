@@ -11,11 +11,14 @@ use App\Http\Requests\Lesson\StoreLessonRequest;
 use App\Http\Requests\Lesson\UpdateLessonRequest;
 use App\Services\LessonService;
 use App\Http\Resources\LessonResource;
+use App\Traits\ApiResponseTrait;
 
 class LessonController extends Controller
 {
-    use AuthorizesRequests; //
+    use AuthorizesRequests; // 
     
+    use ApiResponseTrait;
+
     public function __construct(
         private LessonService $lessonService
     ) {}
@@ -24,34 +27,50 @@ class LessonController extends Controller
     {
         $this->authorize('view', $course);
         $lessons = $this->lessonService->getByCourse($course->id);
-        return response()->json(LessonResource::collection($lessons));
+        return $this->successResponse(
+            LessonResource::collection($lessons),
+            'Lessons retrieved successfully.'
+        );
     }
 
     public function store(StoreLessonRequest $request): JsonResponse
     {
         $this->authorize('create', Lesson::class);
         $lesson = $this->lessonService->createLesson($request->validated());
-        return response()->json(new LessonResource($lesson), 201);
+        return $this->successResponse(
+            new LessonResource($lesson),
+            'Lesson created successfully.',
+            201
+        );
     }
 
     public function show(Lesson $lesson): JsonResponse
     {
         $this->authorize('view', $lesson);
         $lesson = $this->lessonService->getById($lesson->id);
-        return response()->json(new LessonResource($lesson));
+        return $this->successResponse(
+            new LessonResource($lesson),
+            'Lesson retrieved successfully.'
+        );
     }
 
     public function update(UpdateLessonRequest $request, Lesson $lesson): JsonResponse
     {
         $this->authorize('update', $lesson);
         $updatedLesson = $this->lessonService->updateLesson($lesson, $request->validated());
-        return response()->json(new LessonResource($updatedLesson));
+        return $this->successResponse(
+            new LessonResource($updatedLesson),
+            'Lesson updated successfully.'
+        );
     }
 
     public function destroy(Lesson $lesson): JsonResponse
     {
         $this->authorize('delete', $lesson);
         $this->lessonService->deleteLesson($lesson);
-        return response()->json(['message' => 'Lesson deleted successfully.'], 200);
+        return $this->successResponse(
+            null,
+            'Lesson deleted successfully.'
+        );
     }
 }

@@ -18,7 +18,8 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'instructor_id' => new UserResource($this->whenLoaded('instructor')), // this loads the instructor relationship and returns it as a UserResource.
+            'instructor_id' => $this->instructor_id, // this includes the instructor_id in the response, which is a foreign key referencing the user who is the instructor of the course.
+            'instructor' => new UserResource($this->whenLoaded('instructor')), // this loads the instructor relationship and returns it as a UserResource.
             'thumbnail' => $this->thumbnail,
             'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
             'status' => $this->status,

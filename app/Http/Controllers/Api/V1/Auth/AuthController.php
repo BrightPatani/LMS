@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Traits\ApiResponseTrait;
 
 class AuthController extends Controller
 {
+    use ApiResponseTrait;
+
     public function __construct(
         private AuthService $authService
     ) {}
@@ -19,10 +22,10 @@ class AuthController extends Controller
     {
         $result = $this->authService->register($request->validated());
 
-        return response()->json([
-            'message' => 'Registration successful',
-            'user' => new UserResource($result['user']),
-            'token' => $result['token'],
-        ]);
+        return $this->successResponse(
+            new UserResource($result['user']), 
+            'User registered successfully.',
+            201
+        );
     }
 }
