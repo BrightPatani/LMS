@@ -21,7 +21,7 @@ class CourseController extends Controller
 
     public function __construct(
         private CourseService $courseService,
-    ) {}
+    ) {} 
 
     public function index(): JsonResponse
         {

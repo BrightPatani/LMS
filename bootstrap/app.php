@@ -41,4 +41,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => config('app.debug') ? $e->getMessage() : 'An unexpected error occurred',
             ], 500);
         });
-    });
+    })->create(); 
