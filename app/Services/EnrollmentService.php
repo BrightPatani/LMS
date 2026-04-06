@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Repositories\EnrollmentRepository;
 use Illuminate\Support\Facades\DB;
+use App\Events\EnrollmentCreated;
+use App\Services\ActivityLogService;
 
 class EnrollmentService
 {
     public function __construct(
         private EnrollmentRepository $enrollmentRepository,
+        private ActivityLogService $activityLogService
     ) {}
 
     public function enrollStudent(int $userId, int $courseId): array
@@ -16,12 +19,23 @@ class EnrollmentService
        if ($this->enrollmentRepository->isEnrolled($courseId, $userId)) {
             return [
                 'enrolled' => false,
-                'message' => 'User is already enrolled in this course.',
+                'message' => 'Student is already enrolled in this course.',
             ];
         }
 
-        $enrollment = DB::transaction(function () use ($userId, $courseId) {
+        $enrollment = DB::transaction(function () use ($_COOKIE, $userId, $courseId) {
             return $this->enrollmentRepository->enroll($userId, $courseId);
+
+            event(new EnrollmentCreated($enrollment)); //  Dispatch the event after successful enrollment
+
+            $this->activityLogService->log(
+                action: 'course_enrolled',
+                description: "User {$userId} enrolled in course {$courseId}",
+                subject: $enrollment,
+                properties: ['course_id' => $courseId, 'user_id' => $userId]
+            ); // Log the enrollment activity
+
+            return $enrollment;
         });
 
         return [

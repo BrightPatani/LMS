@@ -30,6 +30,11 @@ class CourseService
          return $course->load(['instructor']); // this loads the instructor relationship for the newly created course before returning it.
     }
 
+    public function getPopular(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->courseRepository->getPopular(); // this retrieves the most popular courses using the CourseRepository.
+    }   
+
     public function updateCourse(Course $course, array $data): Course
     {
         return $this->courseRepository->update($course, $data); // this updates an existing course with the new data using the CourseRepository.
