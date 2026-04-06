@@ -43,7 +43,7 @@ class FileController extends Controller
         return $this->successResponse(['file' => $file], 'File uploaded successfully.', 201);
     }
 
-    public function destory(int $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         $file = \App\Models\File::findOrFail($id);
         $this->authorize('delete', $file->lesson);
