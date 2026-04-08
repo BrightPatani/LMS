@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\validation\ValidationException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -14,7 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'is_instructor' => \App\Http\Middleware\EnsureInstructor::class,
+            'is_student' => \App\Http\Middleware\EnsureStudent::class,
+            'is_admin' => \App\Http\Middleware\EnsureAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Validation errors (422)
@@ -26,8 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 422);
         });
 
-            // http exceptions (404, 500, etc.)
-        $exceptions->render (function (HttpExceptionInterface $e, $request) {
+        // http exceptions (404, 500, etc.)
+        $exceptions->render(function (HttpExceptionInterface $e, $request) {
             return response()->json([
                 'success' => 'error',
                 'message' => $e->getMessage() ?: 'An error occurred',
@@ -41,4 +45,4 @@ return Application::configure(basePath: dirname(__DIR__))
                 'message' => config('app.debug') ? $e->getMessage() : 'An unexpected error occurred',
             ], 500);
         });
-    })->create(); 
+    })->create();

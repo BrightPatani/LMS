@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\V1\EnrollmentController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     // View user's enrollments
     Route::get('/enrollments/my-courses', [EnrollmentController::class, 'myCourses']);
     Route::get('/enrollments/{enrollment}', [EnrollmentController::class, 'show']);

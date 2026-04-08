@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\V1\AssignmentController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
 
     // only instructors can manage assignments, but both students and instructors can view them.
     Route::get('/assignments', [AssignmentController::class, 'index']);

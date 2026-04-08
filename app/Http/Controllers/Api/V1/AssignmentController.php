@@ -37,11 +37,11 @@ class AssignmentController extends Controller
     public function submit(SubmitAssignmentRequest $request, Assignment $assignment): JsonResponse
     {
         $result = $this->assignmentService->submit(
-            $assignment->id,
-            $request->user()->id,
-            $request->input('content'), // this retrieves the content of the assignment submission from the request, allowing students to submit their work as text content when they submit an assignment. The content is optional, but if provided, it will be processed and stored accordingly by the service.
-            $request->file('file') // this retrieves the uploaded file from the request, allowing the AssignmentService to handle the file upload and associate it with the submission when a student submits an assignment. The file is optional, but if provided, it will be processed and stored accordingly by the service.
-        );
+           auth()->user->id(),
+           $assignment->id,
+           $request->input('content'),
+           $request->file('file')
+        ); // this will handle the logic of creating a submission, including saving the file if one is uploaded, and associating the submission with the correct user and assignment.
 
         return $this->successResponse(
             new SubmissionResource($result['submission']),

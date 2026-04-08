@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\V1\LessonController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     // Any authenticated user can view lessons
     Route::get('/courses/{course}/lessons', [LessonController::class, 'index']);
     Route::get('/lessons/{lesson}', [LessonController::class, 'show']);
