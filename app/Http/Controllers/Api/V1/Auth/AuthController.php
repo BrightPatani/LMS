@@ -31,34 +31,53 @@ class AuthController extends Controller
         );
     }
 
-    public function login(LoginRequest $request): JsonResponse
-    {
-      $token = $this->authService->login($request->validated());
+  public function login(LoginRequest $request): JsonResponse
+{
+    $token = $this->authService->login($request->validated());
 
-      if (!$token) {
-          return $this->errorResponse('Invalid credentials.', 401);
-      }
-
-      return $this->successResponse(
-          new UserResource($this->authService->me()),
-          'Login successful.',
-          200,
-          ['token' => $token]
-      );
-
+    if (!$token) {
+        return $this->errorResponse('Invalid credentials.', 401);
     }
+
+    // Combine the user data and the token into one data array
+    return $this->successResponse(
+        [
+            'user' => new UserResource($this->authService->me()),
+            'token' => $token,
+            'token_type' => 'Bearer'
+        ],
+        'Login successful.',
+        200
+    );
+}
+
 
     public function logout(): JsonResponse
     {
-        $this->authService->logout();
-        return $this->successResponse(null, 'Logged out successfully.');
+        try {
+            $this->authService->logout();
+            return $this->successResponse(null, 'Logout successful.');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'error_message' => 'Logout failed: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
     }
 
-    public function me(): JsonResponse
-    {
-        return $this->successResponse(
-            new UserResource($this->authService->me()),
-            'User retrieved successfully.'
-        );
+  public function user(): JsonResponse
+{
+    $user = $this->authService->me();
+
+    if (!$user) {
+        return $this->errorResponse('Unauthorized', 401);
     }
+
+    return $this->successResponse(
+        new UserResource($user),
+        'User retrieved successfully.'
+    );
+}
 }

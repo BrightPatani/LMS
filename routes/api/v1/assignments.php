@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->group(function () {
 
     // only instructors can manage assignments, but both students and instructors can view them.
-    Route::get('/assignments', [AssignmentController::class, 'index']);
-    Route::get('/assignments/{assignment}', [AssignmentController::class, 'show']);
+    Route::get('/', [AssignmentController::class, 'index']); // 
+    Route::get('/{assignment}', [AssignmentController::class, 'show']);
 
     // only instructors can create, update, and delete assignments
     Route::middleware('is_instructor')->group(function () {
-        Route::post('/assignments', [AssignmentController::class, 'store']);
+        Route::post('/', [AssignmentController::class, 'store']);
     });
 
     // students submit to an assignment
     Route::middleware('is_student')->group(function () {
-        Route::post('/assignments/{assignment}/submit', [AssignmentController::class, 'submit']);
+        Route::post('/{assignment}/submit', [AssignmentController::class, 'submit']);
     });
 });

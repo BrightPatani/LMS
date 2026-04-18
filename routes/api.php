@@ -3,10 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
 Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::prefix('auth')->group(base_path('routes/api/v1/auth.php'));
     Route::prefix('courses')->group(base_path('routes/api/v1/courses.php'));
+    Route::prefix('lessons')->group(base_path('routes/api/v1/lessons.php'));
     Route::prefix('enrollments')->group(base_path('routes/api/v1/enrollments.php'));
     Route::prefix('assignments')->group(base_path('routes/api/v1/assignments.php'));
     Route::prefix('comments')->group(base_path('routes/api/v1/comments.php'));

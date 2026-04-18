@@ -21,7 +21,7 @@ class AssignmentPolicy
      */
     public function view(User $user, Assignment $assignment): bool
     {
-        return false;
+        return true;
     }
 
     /**

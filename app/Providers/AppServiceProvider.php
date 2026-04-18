@@ -39,8 +39,11 @@ class AppServiceProvider extends ServiceProvider
 
         // API Rate Limiter
         RateLimiter::for('api', function (Request $request) {
+
+            $userId = auth('api')->id(); // Get the authenticated user's ID, or null if not authenticated
+
             return Limit::perMinute(60)
-                ->by($request->user()?->id ?: $request->ip())
+                ->by($userId ?: $request->ip())
                 ->response(function () {
                     return response()->json([
                         'success' => 'error',
@@ -51,8 +54,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Auth Rate Limiter
         RateLimiter::for('auth', function (Request $request) {
+            $userId = auth('api')->id();
             return Limit::perMinute(10)
-                ->by($request->ip())
+                ->by($userId ?: $request->ip())
                 ->response(function () {
                     return response()->json([
                         'success' => 'error',
@@ -63,8 +67,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Uploads Rate Limiter
         RateLimiter::for('uploads', function (Request $request) {
+            $userId = auth('api')->id();
+            
             return Limit::perMinute(20)
-                ->by($request->user()?->id ?: $request->ip())
+                ->by($userId ?: $request->ip())
                 ->response(function () {
                     return response()->json([
                         'success' => 'error',

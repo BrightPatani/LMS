@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthService {
     public function __construct(
@@ -11,33 +12,40 @@ class AuthService {
     ){}
 
     public function register(array $data): array 
-        {
-            $user = $this->userRepository->create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => bcrypt($data['password']),
-                'role' => $data['role'] ?? 'student',
-            ]);
+    {
+        $user = $this->userRepository->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'role' => $data['role'] ?? 'student',
+        ]);
 
-            $token = Auth::login($user);
-            return ['user' => $user, 'token' => $token];
-        } // This method creates a new user with the provided data, hashes the password, and assigns a role (defaulting to 'student' if not provided). After creating the user, it generates a JWT token for the newly registered user and returns both the user and the token.
+        // For JWT, login() returns the token string directly
+        $token = Auth::guard('api')->login($user);
+        
+        return ['user' => $user, 'token' => $token];
+    }
     
     public function login(array $credentials): ?string
-        {
-            return Auth::attempt([
-                'email' => $credentials['email'],
-                'password' => $credentials['password'],
-            ]) ? Auth::getToken()->get() : null;
-        } // This method attempts to authenticate the user with the provided email and password. If authentication is successful, it returns the generated JWT token; otherwise, it returns null.
+    {
+        // attempt() returns the token string on success, or false on failure
+        $token = Auth::guard('api')->attempt([
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ]);
+
+        return $token ?: null; // return the token if authentication is successful, or null if it fails
+    }
     
     public function logout(): void
-        {
-            Auth::logout();
-        }
+    {
+        // Invalidates the current JWT token
+        Auth::guard('api')->logout(); // this method invalidates the current JWT token, effectively logging the user out by preventing further use of that token for authentication.
+    }
 
-    public function me(): \App\Models\User
-        {
-            return Auth::user();
-        } // This method retrieves the currently authenticated user using the Auth facade and returns it.
+    public function me(): ?User
+    {
+        // Retrieves the user based on the JWT in the request header
+        return auth('api')->user();
+    }
 }

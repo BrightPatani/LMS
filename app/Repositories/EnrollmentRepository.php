@@ -11,7 +11,7 @@ class EnrollmentRepository
     {
         return Enrollment::where('user_id', $userId)
             ->where('course_id', $courseId)
-            ->exists(); // this checks if an enrollment record exists for the given user ID and course ID, returning true if the user is enrolled in the course and false otherwise.
+            ->exists();
     }
 
     public function enroll(int $userId, int $courseId): Enrollment

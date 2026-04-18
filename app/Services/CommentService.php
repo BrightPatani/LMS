@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Comment;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 
 class CommentService
@@ -27,12 +28,12 @@ class CommentService
         ]);
     }
 
-    public function getFor(string $type, int $id): \Illuminate\Database\Eloquent\Collection
+    public function getFor(string $type, int $id): LengthAwarePaginator
     {
-        $modelClass = $this->typeMap[$type];
+        $modelClass = $this->typeMap[$type] ?? throw new \InvalidArgumentException("Invalid commentable type.");
 
-        return Comment::where('commentable_type', $modelClass)
-            ->where('commentable_id', $id)
+        return Comment::where('commentable_id', $id)
+            ->where('commentable_type', $modelClass)
             ->with('author')
             ->latest()
             ->paginate(15);

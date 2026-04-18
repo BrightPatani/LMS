@@ -20,6 +20,7 @@ trait ApiResponseTrait
             'success' => true,
             'message' => $message,
             'data' => $data,
+
         ], $statusCode);
     }
 

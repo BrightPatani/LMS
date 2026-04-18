@@ -18,9 +18,9 @@ class EnrollmentResource extends JsonResource
             'id' => $this->id,
             'course_id' => $this->course_id,
             'user_id' => $this->user_id,
-            'enrolled_at' => $this->enrolled_at->toDateTimeString(),
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'enrolled_at' => optional($this->enrolled_at)->toDateTimeString(),
+            'created_at' => optional($this->created_at)->toDateTimeString(),
+            'updated_at' => optional($this->updated_at)->toDateTimeString(),
         ];
     }
 }

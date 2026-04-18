@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
             $table->string('original_name');
-            $table->string('path');
+            $table->string('path')->nullable();
+            $table->text('file_link')->nullable();
             $table->string('mime_type')->nullable();
             $table->unsignedBigInteger('size')->nullable();
             $table->timestamps();

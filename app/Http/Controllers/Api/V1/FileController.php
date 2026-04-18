@@ -35,7 +35,7 @@ class FileController extends Controller
 
     public function uploadLessonFile(UploadLessonFileRequest $request, Lesson $lesson): JsonResponse
     {
-        $this->authorize('update', $lesson);
+        //$this->authorize('update', $lesson);
         $file = $this->fileService->uploadLessonFile(
             $request->file('file'),
             $lesson->id

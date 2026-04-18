@@ -21,8 +21,8 @@ class SubmissionResource extends JsonResource
             'content' => $this->content,
             'file' => new FileResource($this->whenLoaded('file')), // this includes the associated file of the submission in the response, using the FileResource to format it, but only if the 'file' relationship has been loaded.
             'file_path' => $this->file_path, // this includes the file path of the submission in the response, allowing clients to access the location of the submitted file if it exists.
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

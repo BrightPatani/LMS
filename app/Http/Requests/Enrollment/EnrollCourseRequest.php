@@ -11,7 +11,7 @@ class EnrollCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true; // Authorization is handled in the controller, so we return true here to allow the request to proceed.
     }
 
     /**
@@ -22,7 +22,7 @@ class EnrollCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'course_id' => ['required', 'integer', 'exists:courses,id'], // This validation rule ensures that the 'course_id' field is required, must be an integer, and must exist in the 'courses' table under the 'id' column. This prevents students from enrolling in non-existent courses.
         ];
     }
 }

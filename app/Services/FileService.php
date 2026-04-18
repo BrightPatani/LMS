@@ -36,19 +36,19 @@ class FileService
     public function uploadCourseThumbnail(UploadedFile $file, int $courseId): string
     {
         $course = \App\Models\Course::find($courseId);
-        if ($course->thumnail) {
+        if ($course->thumbnail) {
             Storage::disk('public')->delete($course->thumbnail); // Delete old thumbnail if it exists
         }
         $path = $this->store($file, 'courses');
         $course->update(['thumbnail' => $path]);
-        return $path;
+        return Storage::url($path); // this method uploads a thumbnail image for a course, deletes the old thumbnail if it exists, and returns the public URL of the new thumbnail.
     }
 
     public function uploadSubmissionfile(UploadedFile $file, int $submissionId): string
     {
         $path = $this->store($file, 'submissions');
         \App\Models\Submission::find($submissionId)->update(['file_path' => $path]);
-        return $path;
+        return Storage::url($path);
     }
 
     public function delete(string $path): void

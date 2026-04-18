@@ -13,6 +13,7 @@ use App\Models\Assignment;
 use App\Services\AssignmentService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentController extends Controller
 {
@@ -37,9 +38,9 @@ class AssignmentController extends Controller
     public function submit(SubmitAssignmentRequest $request, Assignment $assignment): JsonResponse
     {
         $result = $this->assignmentService->submit(
-           auth()->user->id(),
-           $assignment->id,
-           $request->input('content'),
+           Auth::id(),
+           $assignment,
+           ['content' => $request->input('content')], // this will pass the content of the submission as an array, which allows for future extensibility if you want to include additional fields in the submission later on without changing the method signature.
            $request->file('file')
         ); // this will handle the logic of creating a submission, including saving the file if one is uploaded, and associating the submission with the correct user and assignment.
 

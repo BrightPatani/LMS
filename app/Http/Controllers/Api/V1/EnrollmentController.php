@@ -28,15 +28,16 @@ class EnrollmentController extends Controller
     public function enroll(EnrollCourseRequest $request): JsonResponse
     {
         $enrollment = $this->enrollmentService->enrollStudent(Auth::id(), $request->course_id);
-        if (!$enrollment) {
+        if (!$enrollment['enrolled']) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to enroll in course.',
+                'data' => null,
             ], 409);
         }
 
         return $this->successResponse(
-            new EnrollmentResource($enrollment),
+            new EnrollmentResource($enrollment['enrollment']),
             'Enrolled in course successfully.',
             201
         );
@@ -53,7 +54,11 @@ class EnrollmentController extends Controller
 
     public function show(Enrollment $enrollment): JsonResponse
     {
-        $this->authorize('view', $enrollment);
+        //manually check ownership
+        if (auth('api')->id() !== $enrollment->user_id) {
+            return $this->errorResponse('This action is unauthorized.', 403);
+        }
+        
         return $this->successResponse(
             new EnrollmentResource($enrollment),
             'Enrollment details retrieved successfully.'
@@ -62,12 +67,17 @@ class EnrollmentController extends Controller
 
     public function destroy(Enrollment $enrollment): JsonResponse
     {
-        $this->authorize('delete', $enrollment);
+        // Manually check ownership 
+         if (auth('api')->id() !== $enrollment->user_id) {
+             return $this->errorResponse('This action is unauthorized.', 403);
+        }
+        
         $enrollment->delete();
+
         return $this->successResponse(
             null,
             'Enrollment deleted successfully.'
         );
-    } // this method deletes a specific enrollment by accepting an Enrollment model instance as a parameter. It first checks if the authenticated user has permission to delete the enrollment using the authorize method. If authorized, it deletes the enrollment and returns a JSON response with a success message indicating that the enrollment was deleted successfully.
+    }
 
 }

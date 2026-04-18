@@ -17,13 +17,13 @@ class LessonResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'course-id' => $this->course_id,
+            'course_id' => $this->course_id,
             'title' => $this->title,
             'content' => $this->content,
             'order' => $this->order,
             'files' => FileResource::collection($this->whenLoaded('files')), // this includes the associated files of the lesson in the response, using the FileResource to format each file, but only if the 'files' relationship has been loaded.
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

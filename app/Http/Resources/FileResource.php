@@ -20,8 +20,8 @@ class FileResource extends JsonResource
             'path' => $this->path,
             'size' => $this->size,
             'mime_type' => $this->mime_type,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }
