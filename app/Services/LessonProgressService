@@ -1,0 +1,89 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Lesson;
+use App\Models\User;
+use App\Events\Coursecompleted;
+use app\Models\Enrollment;
+use App\Repositories\LessonProgressRepository;
+use Illuminate\Support\Facades\DB;
+
+class LessonProgressService
+{
+    protected $lessonProgressRepository; 
+
+    public function __construct(
+        private LessonProgressRepository $ProgressRepository,
+        private ActivityLogService $activityLogService
+    ) {}
+
+    public function markComplete(int $userId, int $lessonId): array
+    {
+        $lesson = Lesson::with('course')->findOrFail($lessonId); // this retrieves the lesson along with its associated course using eager loading to optimize database queries.
+        $isEnrolled = Enrollment::where('user_id', $userId)
+            ->where('course_id', $lesson->course_id)
+            ->exists(); // this checks if the user is enrolled in the course associated with the lesson, ensuring that only enrolled users can mark lessons as complete.
+        
+        if (!$isEnrolled) {
+            return [
+                'success' => false,
+                'message' => 'You must be enrolled in this course to track progress.',
+            ];
+        }
+
+        $progress = DB::transaction(function () use ($userId, $lessonId, $lesson) {
+            $progress = $this->ProgressRepository->markComplete(
+                $userId,
+                $lessonId,
+                $lesson->course_id
+            );
+
+            $stats = $this->ProgressRepository->getCompletionStats($userId, $lesson->course_id);
+            if ($stats['is_complete']) {
+                event(new Coursecompleted(
+                    User::find($userId),
+                    $lesson->course
+                ));
+            }
+            return $progress;
+        });
+
+        $this->activityLogService->log(
+            action: 'lesson_completed',
+            description: "User #{$userId} completed lesson #{$lessonId}",
+            subject: $progress,
+            properties: [
+                'course_id' => $lesson->course_id,
+            ]
+        );
+        $stats = $this->ProgressRepository->getCompletionStats($userId, $lesson->course_id);
+        return [
+            'success' => true,
+            'progress' => $progress,
+            'stats' => $stats,
+        ];
+    }
+
+    public function getCourseProgress(int $userId, int $courseId): array 
+    {
+        $stats = $this->ProgressRepository->getCompletionStats($userId, $courseId);
+        $completedIds = $this->ProgressRepository->getCompletedLessonIds($userId, $courseId);
+        $lessons = Lesson::where('course_id', $courseId)
+            ->orderBy('order')
+            ->get()
+            ->map(fn($lesson) => [
+                'id' => $lesson->id,
+                'title' => $lesson->title,
+                'order' => $lesson->order,
+                'is_completed' => $completedIds->contains($lesson->id),
+            ]);
+                
+        return [
+            'course_id' => $courseId,
+            'stats' => $stats,
+            'lessons' => $lessons,
+        ];
+
+    }
+}

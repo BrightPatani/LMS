@@ -30,4 +30,14 @@ class Lesson extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    public function progress(): HasMany
+    {
+        return $this->hasMany(LessonProgress::class);
+    }
+
+    public function isCompletedByUser(User $user): bool
+    {
+        return $this->progress()->where('user_id', $user->id)->exists();
+    }
 }

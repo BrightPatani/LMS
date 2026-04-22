@@ -88,4 +88,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Submission::class);
     } // this defines that a user has many submissions, which is important for students submitting assignments.
+
+    public function lessonProgress()
+    {
+        return $this->hasMany(LessonProgress::class);
+    }
 }
