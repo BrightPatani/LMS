@@ -13,6 +13,15 @@ class Submission extends Model
         'content',
         'file_path',
         'status',
+        'grade',
+        'feedback',
+        'graded_at',
+        'graded_by',
+    ];
+
+    protected $casts = [
+        'graded_at' => 'datetime',
+        'grade' => 'integer',
     ];
 
     public function assignment(): BelongsTo
@@ -20,8 +29,19 @@ class Submission extends Model
         return $this->belongsTo(Assignment::class);
     }
 
-    public function user(): BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function gradedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'graded_by');
+    }
+
+    public function getStatusLabelAttribute(): string 
+    {
+        if ($this->grade !== null) return 'graded';
+        return $this->status;
     }
 }

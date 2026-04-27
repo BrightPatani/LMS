@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ActivityLogService
 {
+    const ACTION_LESSON_COMPLETED = 'lesson.completed';
+    const ACTION_PROFILE_UPDATED = 'profile.updated';
+    const ACTION_PASSWORD_UPDATED = 'password.updated';
+    const ACTION_COURSE_COMPLETED = 'course.completed';
+
     public function log(
         string $action,
         ?string $description = null,

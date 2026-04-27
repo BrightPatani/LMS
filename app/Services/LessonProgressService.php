@@ -84,6 +84,5 @@ class LessonProgressService
             'stats' => $stats,
             'lessons' => $lessons,
         ];
-
     }
 }

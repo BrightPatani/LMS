@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Models\LessonProgress;
 use App\Models\Lesson;
-use Illuminate\Support\Collections\Collection;
-use Ramsey\Collection\Collection as RamseyCollection;
-use Tymon\JWTAuth\Claims\Collection as ClaimsCollection;
+use Illuminate\Support\Collection;
 
 class LessonProgressRepository
 {
@@ -31,7 +29,7 @@ class LessonProgressRepository
         ); // This will create a new record if it doesn't exist, or return the existing one if it does.
     }
 
-    public function getCompletedLessonIds(int $userId, int $courseId): ClaimsCollection
+    public function getCompletedLessonIds(int $userId, int $courseId): Collection
     {
         return LessonProgress::where('user_id', $userId)
             ->where('course_id', $courseId)
@@ -54,7 +52,7 @@ class LessonProgressRepository
 
     }
 
-    public function getProgressForcourses(int $userId, array $courseIds): RamseyCollection
+    public function getProgressForcourses(int $userId, array $courseIds): Collection
     {
         return LessonProgress::where('user_id', $userId)
             ->whereIn('course_id', $courseIds)
