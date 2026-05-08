@@ -38,4 +38,15 @@ trait ApiResponseTrait
             'message' => $message,
         ], $statusCode);
     }
+
+    protected function paginatedResponse(mixed $resource): JsonResponse
+    {
+        if ($resource instanceof JsonResponse) {
+            return $resource;
+        }
+
+        return response()->json(
+            $resource->response()->getData(true)
+        );
+    }    
 }

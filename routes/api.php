@@ -13,6 +13,7 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::prefix('certificates')->group(base_path('routes/api/v1/certificates.php'));
     Route::prefix('files')->group(base_path('routes/api/v1/files.php'));
     Route::prefix('me')->group(base_path('routes/api/v1/student.php'));
+    Route::prefix('instructor')->group(base_path('routes/api/v1/instructor.php'));
 
     Route::middleware(['auth:api', 'isStudent'])->group(function () {
         Route::get('/courses/enrolled', [\App\Http\Controllers\Api\V1\EnrollmentController::class, 'myCourses']);

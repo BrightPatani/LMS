@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Events\Coursecompleted;
-use app\Models\Enrollment;
+use App\Models\Enrollment;
 use App\Repositories\LessonProgressRepository;
 use Illuminate\Support\Facades\DB;
 

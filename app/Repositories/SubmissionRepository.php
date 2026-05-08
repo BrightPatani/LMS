@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Submission;
+use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class SubmissionRepository
@@ -17,6 +18,17 @@ class SubmissionRepository
             ])->latest()
             ->paginate(15);
 
+    }
+
+    /**
+     * Get all submissions for a specific student.
+     */
+    public function getAllForStudent(int $studentId): Collection
+    {
+        return Submission::where('user_id', $studentId)
+            ->with(['lesson', 'course']) // Optional: Eager load related data
+            ->latest()
+            ->get();
     }
 
     public function findForStudent(int $submissionId, int $userId): ?Submission

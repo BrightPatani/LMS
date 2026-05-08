@@ -12,6 +12,9 @@ class ActivityLogService
     const ACTION_PROFILE_UPDATED = 'profile.updated';
     const ACTION_PASSWORD_UPDATED = 'password.updated';
     const ACTION_COURSE_COMPLETED = 'course.completed';
+    const ACTION_COURSE_PUBLISHED = 'course.published';
+    const ACTION_COURSE_UNPUBLISHED = 'course.unpublished';
+    const ACTION_SUBMISSION_GRADED = 'submission.graded';
 
     public function log(
         string $action,

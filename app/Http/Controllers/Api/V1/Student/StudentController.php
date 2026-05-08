@@ -108,6 +108,20 @@ class StudentController extends Controller
         }
 
         /**
+         * Get all submissions for the authenticated student
+         */
+        public function submissions(): JsonResponse
+        {
+            // Assuming your repository has a method to get all for a student
+            $submissions = $this->submissionRepository->getAllForStudent(Auth::id());
+
+            return $this->successResponse(
+                SubmissionResource::collection($submissions),
+                'Submissions retrieved successfully.'
+            );
+        }
+
+        /**
         * update profile
         */
 
