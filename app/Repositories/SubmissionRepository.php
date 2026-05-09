@@ -26,7 +26,11 @@ class SubmissionRepository
     public function getAllForStudent(int $studentId): Collection
     {
         return Submission::where('user_id', $studentId)
-            ->with(['lesson', 'course']) // Optional: Eager load related data
+            ->with([
+                'assignment:id,title,due_date,course_id',
+                'assignment.course:id,title',
+                'gradedBy:id,name',
+            ]) // Optional: Eager load related data
             ->latest()
             ->get();
     }

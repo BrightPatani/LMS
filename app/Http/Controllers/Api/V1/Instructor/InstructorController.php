@@ -28,7 +28,7 @@ class InstructorController extends Controller
         private InstructorDashboardService $dashboardService,
         private InstructorCourseRepository $courseRepository,
         private InstructorSubmissionService $submissionService,
-        private CoursePublishService $PublishService,
+        private CoursePublishService $publishService,
     ) {}
 
     // instructor dashboard (get)
@@ -129,7 +129,7 @@ class InstructorController extends Controller
     //toggle publish course 
     public function togglePublish(Course $course): JsonResponse
     {
-        $result = $this->PublishService->toggle($course, Auth::id());
+        $result = $this->publishService->toggle($course, Auth::id());
         if (!$result['success']) {
             return $this->errorResponse(
                 $result['message'], $result['code']
@@ -170,7 +170,7 @@ class InstructorController extends Controller
     }
 
     // view submissions for a particular assignment 
-    public function assignmentSubmissions (Course $course, int $assignmentId): JsonResponse
+    public function assignmentSubmissions (Course $course, Assignment $assignmentId): JsonResponse
     {
         if ($course->user_id !== Auth::id()) {
             return $this->errorResponse(

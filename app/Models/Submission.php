@@ -9,6 +9,8 @@ class Submission extends Model
 {
     protected $fillable = [
         'assignment_id',
+        'lesson_id',
+        'course_id',
         'user_id',
         'content',
         'file_path',

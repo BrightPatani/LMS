@@ -28,6 +28,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
+        'is_active'
     ];
 
     /**
@@ -44,7 +45,10 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array<string, string>
      */
-    protected $casts = ['role' => Role::class]; // this casts the 'role' attribute to the Role enum, ensuring that when you access the role of a user, it will be an instance of the Role enum rather than a raw string.
+    protected $casts = [
+        'role' => Role::class,
+        'is_active' => 'boolean'
+        ]; // this casts the 'role' attribute to the Role enum, ensuring that when you access the role of a user, it will be an instance of the Role enum rather than a raw string.
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

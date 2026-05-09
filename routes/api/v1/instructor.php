@@ -3,11 +3,11 @@
 use App\Http\Controllers\Api\V1\Instructor\InstructorController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:api', 'isInstructor'])->group(function () {
+Route::middleware(['auth:api', 'is_instructor'])->group(function () {
     Route::get('/dashboard', [InstructorController::class, 'dashboard']);
     
     Route::prefix('courses/{course}')->group(function () {
-        Route::get('/students', [InstructorController::class, 'courseStudents']);
+        //Route::get('/students', [InstructorController::class, 'courseStudents']);
         Route::get('/submissions', [InstructorController::class, 'courseSubmissions']);
         Route::get('/analytics', [InstructorController::class, 'courseAnalytics']);
         Route::patch('/publish', [InstructorController::class, 'togglePublish']);

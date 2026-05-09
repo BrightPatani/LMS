@@ -42,6 +42,7 @@ class CourseController extends Controller
                 201
             );
         }
+
     public function show(Course $course): JsonResponse
         {
             $this->authorize('view', $course);
@@ -51,20 +52,22 @@ class CourseController extends Controller
                 'Course retrieved successfully.'
             );
         }
+
     public function update(UpdateCourseRequest $request, Course $course): JsonResponse
         {
             $this->authorize('update', $course); // this checks if the authenticated user has permission to update the course using the CoursePolicy.
-            $updatedCourse = $this->courseService->updateCourse($course->id, $request->validated()); // this updates the course using the CourseService with the validated request data.
+            $updatedCourse = $this->courseService->updateCourse($course, $request->validated()); // this updates the course using the CourseService with the validated request data.
             return $this->successResponse(
                 new CourseResource($updatedCourse),
                 'Course updated successfully.',
                 200
             );
         }
+
     public function destroy(Course $course): JsonResponse
         {
             $this->authorize('delete', $course); // this checks if the authenticated user has permission to delete the course using the CoursePolicy.
-            $this->courseService->deleteCourse($course->id); // this deletes the course using the CourseService.
+            $this->courseService->deleteCourse($course); // this deletes the course using the CourseService.
             return $this->successResponse(
                 null,
                 'Course deleted successfully.'

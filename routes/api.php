@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\EnrollmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +15,9 @@ Route::prefix('v1')->middleware('throttle:api')->group(function () {
     Route::prefix('files')->group(base_path('routes/api/v1/files.php'));
     Route::prefix('me')->group(base_path('routes/api/v1/student.php'));
     Route::prefix('instructor')->group(base_path('routes/api/v1/instructor.php'));
+    Route::prefix('admin')->group(base_path('routes/api/v1/admin.php'));
 
-    Route::middleware(['auth:api', 'isStudent'])->group(function () {
-        Route::get('/courses/enrolled', [\App\Http\Controllers\Api\V1\EnrollmentController::class, 'myCourses']);
+    Route::middleware(['auth:api', 'is_student'])->group(function () {
+        Route::get('/courses/enrolled', [EnrollmentController::class, 'myCourses']);
     }); // This route allows authenticated students to retrieve a list of courses they are enrolled in by calling the 'myCourses' method of the EnrollmentController.
 });
